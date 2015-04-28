@@ -153,10 +153,10 @@ static int l_bufferfx_palette(lua_State *L) {
 
 
 static unsigned long long xorshift64star(unsigned long long *x) {
-	*x ^= *x >> 12;
-	*x ^= *x << 25;
-	*x ^= *x >> 27;
-	return *x * 2685821657736338717ULL;
+  *x ^= *x >> 12;
+  *x ^= *x << 25;
+  *x ^= *x >> 27;
+  return *x * 2685821657736338717ULL;
 }
 
 static int l_bufferfx_dissolve(lua_State *L) {
