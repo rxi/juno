@@ -12,7 +12,7 @@ function juno.onLoad()
   local xfreq = 0
   local xgain = 0
 
-  juno.audio.master:setCallback(function(t, dt)
+  juno.audio.master:setCallback(function(t)
     -- Clear visualisation table
     for i in ipairs(vis) do
       vis[i] = nil
