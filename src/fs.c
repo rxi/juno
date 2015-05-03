@@ -83,6 +83,10 @@ static int makeDirs(const char *path) {
   int err = FS_ESUCCESS;
   char *str = concat(path, "/", NULL);
   char *p = str;
+  if (!str) {
+    err = FS_EOUTOFMEM;
+    goto end;
+  }
   if (p[0] == '/') p++;
   if (p[0] && p[1] == ':' && p[2] == '\\') p += 3;
   while (*p) {
