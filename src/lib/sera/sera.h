@@ -33,7 +33,7 @@ typedef struct {
 
 typedef struct {
   sr_Pixel color;
-  unsigned char alpha, blend, filter;
+  unsigned char alpha, blend;
 } sr_DrawMode;
 
 typedef struct {
@@ -55,11 +55,6 @@ enum {
   SR_FMT_RGBA,
   SR_FMT_ARGB,
   SR_FMT_ABGR
-};
-
-enum {
-  SR_FILTER_NEAREST,
-  SR_FILTER_BILINEAR
 };
 
 enum {
@@ -89,7 +84,6 @@ void sr_loadPixels(sr_Buffer *b, void *src, int fmt);
 void sr_loadPixels8(sr_Buffer *b, unsigned char *src, sr_Pixel *pal);
 
 void sr_setAlpha(sr_Buffer* b, int alpha);
-void sr_setFilter(sr_Buffer *b, int filter);
 void sr_setBlend(sr_Buffer* b, int blend);
 void sr_setColor(sr_Buffer* b, sr_Pixel c);
 void sr_setClip(sr_Buffer *b, sr_Rect r);

@@ -161,18 +161,6 @@ static int l_buffer_setAlpha(lua_State *L) {
 }
 
 
-static int l_buffer_setFilter(lua_State *L) {
-  Buffer *self = luaL_checkudata(L, 1, CLASS_NAME);
-  const char *str = luaL_optstring(L, 2, "nearest");
-  int mode = 0;
-  if      (!strcmp(str, "nearest" )) mode = SR_FILTER_NEAREST;
-  else if (!strcmp(str, "bilinear")) mode = SR_FILTER_BILINEAR;
-  else luaL_argerror(L, 2, "bad filter mode");
-  sr_setFilter(self->buffer, mode);
-  return 0;
-}
-
-
 static int l_buffer_setBlend(lua_State *L) {
   Buffer *self = luaL_checkudata(L, 1, CLASS_NAME);
   const char *str = luaL_optstring(L, 2, "alpha");
@@ -390,7 +378,6 @@ int luaopen_buffer(lua_State *L) {
     { "getWidth",       l_buffer_getWidth       },
     { "getHeight",      l_buffer_getHeight      },
     { "setAlpha",       l_buffer_setAlpha       },
-    { "setFilter",      l_buffer_setFilter      },
     { "setBlend",       l_buffer_setBlend       },
     { "setColor",       l_buffer_setColor       },
     { "setClip",        l_buffer_setClip        },

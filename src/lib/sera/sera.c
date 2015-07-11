@@ -238,11 +238,6 @@ void sr_setAlpha(sr_Buffer *b, int alpha) {
 }
 
 
-void sr_setFilter(sr_Buffer *b, int filter) {
-  b->mode.filter = filter;
-}
-
-
 void sr_setColor(sr_Buffer *b, sr_Pixel c) {
   b->mode.color.word = c.word & SR_RGB_MASK;
 }
@@ -258,7 +253,6 @@ void sr_setClip(sr_Buffer *b, sr_Rect r) {
 void sr_reset(sr_Buffer *b) {
   sr_setBlend(b, SR_BLEND_ALPHA);
   sr_setAlpha(b, 0xff);
-  sr_setFilter(b, SR_FILTER_NEAREST);
   sr_setColor(b, sr_color(0xff, 0xff, 0xff));
   sr_setClip(b, sr_rect(0, 0, b->w, b->h));
 }
@@ -421,34 +415,6 @@ static void floodFill(sr_Buffer *b, sr_Pixel c, sr_Pixel o, int x, int y) {
 
 void sr_floodFill(sr_Buffer *b, sr_Pixel c, int x, int y) {
   floodFill(b, c, sr_getPixel(b, x, y), x, y);
-}
-
-
-static sr_Pixel lerpPixel(sr_Pixel a, sr_Pixel b, int p) {
-  a.rgba.a = LERP(8, a.rgba.a, b.rgba.a, p);
-  a.rgba.r = LERP(8, a.rgba.r, b.rgba.r, p);
-  a.rgba.g = LERP(8, a.rgba.g, b.rgba.g, p);
-  a.rgba.b = LERP(8, a.rgba.b, b.rgba.b, p);
-  return a;
-}
-
-
-static sr_Pixel getSubPixel(sr_Buffer *b, int fx, int fy) {
-  int x = fx >> FX_BITS;
-  int y = fy >> FX_BITS;
-  if (x < 0 || y < 0 || x + 1 >= b->w || y + 1 >= b->h) {
-    return sr_getPixel(b, x, y);
-  }
-  fx = (fx & FX_MASK) >> (FX_BITS - 8);
-  fy = (fy & FX_MASK) >> (FX_BITS - 8);
-  return lerpPixel(
-    lerpPixel(b->pixels[(x    ) + (y    ) * b->w],
-              b->pixels[(x + 1) + (y    ) * b->w],
-              fx),
-    lerpPixel(b->pixels[(x    ) + (y + 1) * b->w],
-              b->pixels[(x + 1) + (y + 1) * b->w],
-              fx),
-    fy);
 }
 
 
@@ -748,19 +714,9 @@ static void drawBufferScaled(
     dx = odx;
     sx = osx;
     while (dx < w) {
-      switch (b->mode.filter) {
-        default:
-        case SR_FILTER_NEAREST:
-          blendPixel(&b->mode, b->pixels + (x + dx) + (y + dy) * b->w,
-                     src->pixels[(s.x + (sx >> FX_BITS)) +
-                                 (s.y + (sy >> FX_BITS)) * src->w]);
-          break;
-        case SR_FILTER_BILINEAR:
-          blendPixel(&b->mode, b->pixels + (x + dx) + (y + dy) * b->w,
-                     getSubPixel(src, (s.x << FX_BITS) + sx,
-                                      (s.y << FX_BITS) + sy));
-          break;
-      }
+      blendPixel(&b->mode, b->pixels + (x + dx) + (y + dy) * b->w,
+                 src->pixels[(s.x + (sx >> FX_BITS)) +
+                             (s.y + (sy >> FX_BITS)) * src->w]);
       sx += ix;
       dx++;
     }
@@ -809,18 +765,9 @@ checkSourceRight:
   /* Draw */
   dx = left;
   while (dx < right) {
-    switch (b->mode.filter) {
-      default:
-      case SR_FILTER_NEAREST:
-        blendPixel(&b->mode, b->pixels + dx + dy * b->w,
-                   src->pixels[(sx >> FX_BITS) +
-                               (sy >> FX_BITS) * src->w]);
-        break;
-      case SR_FILTER_BILINEAR:
-        blendPixel(&b->mode, b->pixels + dx + dy * b->w,
-                   getSubPixel(src, sx, sy));
-        break;
-    }
+    blendPixel(&b->mode, b->pixels + dx + dy * b->w,
+               src->pixels[(sx >> FX_BITS) +
+                           (sy >> FX_BITS) * src->w]);
 #if 0
     /* DEBUG : Out of bounds? draw pink pixels */
     /* TODO : Remove this */
