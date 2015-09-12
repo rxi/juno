@@ -109,6 +109,7 @@ end:
 
 
 static PathNode *newNode(const char *path) {
+  int res;
   int len = strlen(path);
   PathNode *p = calloc(1, sizeof(*p) + len + 1);
   if (!p) return NULL;
@@ -122,7 +123,8 @@ static PathNode *newNode(const char *path) {
     p->type = PATH_TDIR;
   } else {
     p->type = PATH_TZIP;
-    assert( mz_zip_reader_init_file(&p->zip, path, 0) );
+    res = mz_zip_reader_init_file(&p->zip, path, 0);
+    assert(res);
   }
   return p;
 }
@@ -217,6 +219,7 @@ int fs_unmount(const char *path) {
       PathNode *p = *next;
       *next = (*next)->next;
       destroyNode(p);
+      break;
     }
     next = &(*next)->next;
   }
