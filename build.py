@@ -24,7 +24,7 @@ if platform.system() == "Windows":
   FLAGS += [ "-mwindows" ]
 
 if platform.system() == "Linux":
-  LINK += [ "GL", "luajit-5.1", "SDLmain", "SDL" ]
+  LINK += [ "luajit-5.1", "SDLmain", "SDL" ]
 
 if platform.system() == "Darwin":
   LINK += [ "luajit-5.1" ]
