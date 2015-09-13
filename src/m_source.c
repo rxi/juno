@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <SDL/SDL.h>
 #include "luax.h"
 #include "fs.h"
@@ -136,20 +135,20 @@ static Command command(int type, Source *source) {
 }
 
 static void pushCommand(Command *c) {
-  assert(SDL_LockMutex(commandMutex) == 0);
+  ASSERT(SDL_LockMutex(commandMutex) == 0);
   int err = vec_push(&commands, *c);
-  assert(err == 0);
-  assert(SDL_UnlockMutex(commandMutex) == 0);
+  ASSERT(err == 0);
+  ASSERT(SDL_UnlockMutex(commandMutex) == 0);
 }
 
 static void lockLua(void) {
-  assert(luaMutex);
-  assert(SDL_LockMutex(luaMutex) == 0);
+  ASSERT(luaMutex);
+  ASSERT(SDL_LockMutex(luaMutex) == 0);
 }
 
 static void unlockLua(void) {
-  assert(luaMutex);
-  assert(SDL_UnlockMutex(luaMutex) == 0);
+  ASSERT(luaMutex);
+  ASSERT(SDL_UnlockMutex(luaMutex) == 0);
 }
 
 static SourceEvent event(int type) {
@@ -187,7 +186,7 @@ static Source *checkSource(lua_State *L, int idx) {
 
 static Source *newSource(lua_State *L) {
   Source *self = malloc(sizeof(*self));
-  assert(self);
+  ASSERT(self);
   memset(self, 0, sizeof(*self));
   self->dataRef = LUA_NOREF;
   self->destRef = LUA_NOREF;
@@ -363,7 +362,7 @@ void source_processCommands(void) {
   vec_t(int) oldRefs;
   vec_init(&oldRefs);
   /* Handle commands */
-  assert(SDL_LockMutex(commandMutex) == 0);
+  ASSERT(SDL_LockMutex(commandMutex) == 0);
   vec_foreach_ptr(&commands, c, i) {
     switch (c->type) {
       case COMMAND_ADD:
@@ -432,7 +431,7 @@ void source_processCommands(void) {
   }
   /* Clear command vector */
   vec_clear(&commands);
-  assert(SDL_UnlockMutex(commandMutex) == 0);
+  ASSERT(SDL_UnlockMutex(commandMutex) == 0);
   /* Remove old Lua references */
   if (oldRefs.length > 0) {
     int i, ref;
@@ -794,13 +793,13 @@ int luaopen_source(lua_State *L) {
     { "stop",           l_source_stop           },
     { NULL, NULL }
   };
-  assert( luaL_newmetatable(L, CLASS_NAME) );
+  ASSERT( luaL_newmetatable(L, CLASS_NAME) );
   luaL_setfuncs(L, reg, 0);
   lua_pushvalue(L, -1);
   lua_setfield(L, -2, "__index");
   /* Init command mutex */
   commandMutex = SDL_CreateMutex();
-  assert(commandMutex);
+  ASSERT(commandMutex);
   /* Set lua state */
   luaState = L;
   /* Init master */

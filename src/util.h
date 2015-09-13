@@ -9,6 +9,15 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#define ASSERT(x)\
+  do {\
+    if (!(x)) {\
+      fprintf(stderr, "%s:%d: %s(): assertion '%s' failed\n",\
+              __FILE__, __LINE__, __func__, #x);\
+      abort();\
+    }\
+  } while (0)
+
 #define UNUSED(x)       ((void) (x))
 #define MIN(a, b)       ((b) < (a) ? (b) : (a))
 #define MAX(a, b)       ((b) > (a) ? (b) : (a))

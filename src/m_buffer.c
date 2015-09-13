@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <assert.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "lib/stb_image.h"
 #include "lib/sera/sera.h"
@@ -398,7 +397,7 @@ int luaopen_buffer(lua_State *L) {
     { "draw",           l_buffer_drawBuffer     },
     { NULL, NULL }
   };
-  assert( luaL_newmetatable(L, CLASS_NAME) );
+  ASSERT( luaL_newmetatable(L, CLASS_NAME) );
   luaL_setfuncs(L, reg, 0);
   lua_pushvalue(L, -1);
   lua_setfield(L, -2, "__index");

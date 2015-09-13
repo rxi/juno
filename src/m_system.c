@@ -6,7 +6,6 @@
  */
 
 
-#include <assert.h>
 #include <SDL/SDL.h>
 #include "util.h"
 #include "luax.h"
@@ -147,7 +146,7 @@ static int l_system_info(lua_State *L) {
     char buf[1024];
     sprintf(path, "/proc/%d/exe", getpid());
     int len = readlink(path, buf, sizeof(buf) - 1);
-    assert( len != -1 );
+    ASSERT( len != -1 );
     buf[len] = '\0';
     dirname(buf);
     lua_pushfstring(L, "%s", buf);
@@ -157,7 +156,7 @@ static int l_system_info(lua_State *L) {
 #elif __APPLE__
     char buf[1024];
     uint32_t size = sizeof(buf);
-    assert( _NSGetExecutablePath(buf, &size) == 0 );
+    ASSERT( _NSGetExecutablePath(buf, &size) == 0 );
     dirname(buf);
     lua_pushfstring(L, "%s", buf);
 #else

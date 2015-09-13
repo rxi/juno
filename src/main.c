@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <SDL/SDL.h>
 #include "util.h"
 #include "luax.h"
@@ -34,7 +33,7 @@ int main(int argc, char **argv) {
 
   /* Init lua state mutex and pass to sources module */
   luaMutex = SDL_CreateMutex();
-  assert(luaMutex);
+  ASSERT(luaMutex);
   source_setLuaMutex(luaMutex);
 
   /* Init lua state */
@@ -79,7 +78,7 @@ int main(int argc, char **argv) {
     { "init.lua",       init_lua,       sizeof(init_lua)      },
     { NULL, NULL, 0 }
   };
-  assert(SDL_LockMutex(luaMutex) == 0);
+  ASSERT(SDL_LockMutex(luaMutex) == 0);
   int i;
   for (i = 0; items[i].name; i++) {
     int err = luaL_loadbuffer(L, items[i].data, items[i].size, items[i].name);
@@ -89,7 +88,7 @@ int main(int argc, char **argv) {
       abort();
     }
   }
-  assert(SDL_UnlockMutex(luaMutex) == 0);
+  ASSERT(SDL_UnlockMutex(luaMutex) == 0);
 
   /* Do main loop */
   double last = 0;
@@ -97,7 +96,7 @@ int main(int argc, char **argv) {
   for (;;) {
     screen = SDL_GetVideoSurface();
     if (screen && SDL_MUSTLOCK(screen)) SDL_LockSurface(screen);
-    assert(SDL_LockMutex(luaMutex) == 0);
+    ASSERT(SDL_LockMutex(luaMutex) == 0);
     lua_getglobal(L, "juno");
     if (!lua_isnil(L, -1)) {
       lua_getfield(L, -1, "_onStep");
@@ -111,7 +110,7 @@ int main(int argc, char **argv) {
       }
       lua_pop(L, 1);
     }
-    assert(SDL_UnlockMutex(luaMutex) == 0);
+    ASSERT(SDL_UnlockMutex(luaMutex) == 0);
     if (screen && SDL_MUSTLOCK(screen)) SDL_UnlockSurface(screen);
     /* Flip -- this blocks on some platforms (OSX) */
     SDL_Surface *screen = SDL_GetVideoSurface();

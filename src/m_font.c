@@ -9,9 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <SDL/SDL.h>
 #include "lib/sera/sera.h"
+#include "util.h"
 #include "luax.h"
 #include "fs.h"
 #include "ttf.h"
@@ -140,7 +140,7 @@ int luaopen_font(lua_State *L) {
     { "getHeight",    l_font_getHeight    },
     { NULL, NULL }
   };
-  assert( luaL_newmetatable(L, CLASS_NAME) );
+  ASSERT( luaL_newmetatable(L, CLASS_NAME) );
   luaL_setfuncs(L, reg, 0);
   lua_pushvalue(L, -1);
   lua_setfield(L, -2, "__index");

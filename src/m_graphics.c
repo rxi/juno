@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <float.h>
-#include <assert.h>
 #include <SDL/SDL.h>
 #include "lib/sera/sera.h"
 #include "util.h"
