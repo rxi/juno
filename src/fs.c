@@ -321,7 +321,7 @@ void *fs_read(const char *filename, size_t *len) {
       char *res = malloc(*len + 1);
       if (!res) return NULL;
       res[*len] = '\0';
-      if (fread(res, *len, 1, fp) != 1) {
+      if (fread(res, 1, *len, fp) != *len) {
         free(res);
         fclose(fp);
         return NULL;
