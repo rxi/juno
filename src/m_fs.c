@@ -16,7 +16,7 @@ static void checkError(lua_State *L, int err, const char *str) {
   if (err == FS_ENOWRITEPATH || !str) {
     luaL_error(L, "%s", fs_errorStr(err));
   }
-  luaL_error(L, "%s '%s'", str);
+  luaL_error(L, "%s '%s'", fs_errorStr(err), str);
 }
 
 
