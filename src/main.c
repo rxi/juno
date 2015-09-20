@@ -21,8 +21,10 @@ static lua_State *L;
 static SDL_mutex *luaMutex;
 
 static void shutdown(void) {
+#ifndef __APPLE__
   SDL_UnlockMutex(luaMutex);
   SDL_Quit();
+#endif
 }
 
 int luaopen_juno(lua_State *L);
