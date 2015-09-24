@@ -392,6 +392,10 @@ fs_FileListNode *fs_listDir(const char *path) {
   if (isSeparator(pathTrimmed[pathTrimmedLen - 1])) {
     pathTrimmed[--pathTrimmedLen] = '\0';
   }
+  if (!strcmp(pathTrimmed, ".")) {
+    pathTrimmed[0] = '\0';
+    pathTrimmedLen = 0;
+  }
   /* Fill result list */
   while (p) {
     if (p->type == PATH_TDIR) {
@@ -422,11 +426,13 @@ fs_FileListNode *fs_listDir(const char *path) {
       for (i = 0; i < nfiles; i++) {
         mz_zip_reader_file_stat(&p->zip, i, &s);
         if (
-          strstr(s.m_filename, pathTrimmed) == s.m_filename &&
-          isSeparator(s.m_filename[pathTrimmedLen])
+          ( pathTrimmedLen == 0 ) ||
+          ( strstr(s.m_filename, pathTrimmed) == s.m_filename &&
+            isSeparator(s.m_filename[pathTrimmedLen]) )
         ) {
-          char *filename = s.m_filename + pathTrimmedLen + 1;
+          char *filename = s.m_filename + pathTrimmedLen;
           int filenameLen = strlen(filename);
+          if (isSeparator(filename[0])) filename++;
           /* Strip trailing seperator if it exists -- end of dir names contain
            * a seperator. If this leaves us with nothing then this file was the
            * path itself, which we skip */
