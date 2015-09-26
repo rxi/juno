@@ -513,7 +513,7 @@ void sr_drawLine(sr_Buffer *b, sr_Pixel c, int x0, int y0, int x1, int y1) {
   error = deltax / 2;
   ystep = (y0 < y1) ? 1 : -1;
   y = y0;
-  for (x = x0; x < x1; x++) {
+  for (x = x0; x <= x1; x++) {
     if (steep) {
       sr_drawPixel(b, c, y, x);
     } else {
