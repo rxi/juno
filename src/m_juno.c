@@ -29,6 +29,7 @@ int luaopen_bufferfx(lua_State *L);
 int luaopen_font(lua_State *L);
 int luaopen_source(lua_State *L);
 int luaopen_data(lua_State *L);
+int luaopen_gif(lua_State *L);
 
 int luaopen_juno(lua_State *L) {
   luaL_Reg reg[] = {
@@ -45,6 +46,7 @@ int luaopen_juno(lua_State *L) {
     { "Buffer",   luaopen_buffer    },
     { "Source",   luaopen_source    },
     { "Data",     luaopen_data      },
+    { "Gif",      luaopen_gif       },
     /* Modules */
     { "system",   luaopen_system    },
     { "fs",       luaopen_fs        },
