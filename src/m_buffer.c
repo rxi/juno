@@ -133,9 +133,9 @@ static int l_buffer_clone(lua_State *L) {
 
 static int l_buffer_gc(lua_State *L) {
   Buffer *self = luaL_checkudata(L, 1, CLASS_NAME);
-  if (self->buffer) {                 /* self->buffer may be NULL if  */
-    sr_destroyBuffer(self->buffer);  /* an error was raised in the   */
-  }                                   /* constructor                  */
+  if (self->buffer) {               /* self->buffer may be NULL if  */
+    sr_destroyBuffer(self->buffer); /* an error was raised in the   */
+  }                                 /* constructor                  */
   return 0;
 }
 
