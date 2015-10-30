@@ -52,6 +52,11 @@ src/lib/stb_vorbis.c
 . Public domain
 . https://github.com/nothings/stb
 
+src/lib/jo_gif.c
+. Jon Olick's minimalistic GIF writer
+. Public domain
+. http://www.jonolick.com/home/gif-writer
+
 src/lib/miniz.c
 . A lossless, high performance data compression library
 . Public domain
@@ -66,4 +71,3 @@ src/lib/sera/*
 . 2d software graphics lib
 . MIT license
 . https://github.com/rxi/sera
-
