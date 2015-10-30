@@ -88,7 +88,7 @@ static int l_font_gc(lua_State *L) {
   if (self->font) {
     ttf_destroy(self->font);
   }
-  return 1;
+  return 0;
 }
 
 
