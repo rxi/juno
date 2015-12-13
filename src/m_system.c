@@ -75,7 +75,6 @@ static int l_system_poll(lua_State *L) {
         luax_setfield_string(L, "type", "keyup");
         luax_setfield_fstring(L, "key", "%s",
                               SDL_GetKeyName(e.key.keysym.sym));
-        luax_setfield_fstring(L, "char", "%c", keyChar(e.key.keysym.unicode));
         break;
 
       case SDL_MOUSEMOTION:
