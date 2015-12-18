@@ -551,50 +551,6 @@ void sr_drawBox(sr_Buffer *b, sr_Pixel c, int x, int y, int w, int h) {
 }
 
 
-void sr_drawTriangle(
-  sr_Buffer *b, sr_Pixel c, int x0, int y0, int x1, int y1, int x2, int y2
-) {
-  int x, y, l, r, li, ri;
-  if (y0 > y1) { SWAP(int, y0, y1); SWAP(int, x0, x1); }
-  if (y1 > y2) { SWAP(int, y1, y2); SWAP(int, x1, x2); }
-  if (y0 > y1) { SWAP(int, y0, y1); SWAP(int, x0, x1); }
-  y = y0;
-  r = l = x0 << FX_BITS;
-  li = xdiv((x1 - x0) << FX_BITS, y1 - y0);
-  ri = xdiv((x2 - x0) << FX_BITS, y2 - y0);
-  if (x1 > x0) SWAP(int, li, ri);
-  /* Clipped off screen? */
-  if (y2 < b->clip.y || y0 >= b->clip.y + b->clip.h ) return;
-  if (x0 < (x = b->clip.x) && x1 < x && x2 < x) return;
-  if (x0 >= (x = b->clip.x + b->clip.w) && x1 >= x && x2 >= x) return;
-  /* Draw */
-  if (y0 == y1) {
-    l = MIN(x0, x1) << FX_BITS;
-    r = MAX(x0, x1) << FX_BITS;
-    goto drawBottomPart;
-  }
-  while (y < y1) {
-    sr_drawRect(b, c, l >> FX_BITS, y, (r >> FX_BITS) - (l >> FX_BITS), 1);
-    l += li;
-    r += ri;
-    y++;
-  }
-drawBottomPart:
-  x = xdiv((x2 - x1) << FX_BITS, y2 - y1);
-  if (x1 < x0) {
-    li = x;
-  } else {
-    ri = x;
-  }
-  while (y < y2) {
-    sr_drawRect(b, c, l >> FX_BITS, y, (r >> FX_BITS) - (l >> FX_BITS), 1);
-    l += li;
-    r += ri;
-    y++;
-  }
-}
-
-
 #define DRAW_ROW(x, y, len)\
   do {\
     int y__ = (y);\

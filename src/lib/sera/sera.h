@@ -101,8 +101,6 @@ void sr_drawPixel(sr_Buffer *b, sr_Pixel c, int x, int y);
 void sr_drawLine(sr_Buffer *b, sr_Pixel c, int x0, int y0, int x1, int y1);
 void sr_drawRect(sr_Buffer *b, sr_Pixel c, int x, int y, int w, int h);
 void sr_drawBox(sr_Buffer *b, sr_Pixel c, int x, int y, int w, int h);
-void sr_drawTriangle(sr_Buffer *b, sr_Pixel c,
-                     int x0, int y0, int x1, int y1, int x2, int y2);
 void sr_drawCircle(sr_Buffer *b, sr_Pixel c, int x, int y, int r);
 void sr_drawRing(sr_Buffer *b, sr_Pixel c, int x, int y, int r);
 void sr_drawBuffer(sr_Buffer *b, sr_Buffer *src, int x, int y,
