@@ -319,20 +319,6 @@ static int l_buffer_drawBox(lua_State *L) {
 }
 
 
-static int l_buffer_drawTriangle(lua_State *L) {
-  Buffer *self = luaL_checkudata(L, 1, CLASS_NAME);
-  int x1 = luaL_checknumber(L, 2);
-  int y1 = luaL_checknumber(L, 3);
-  int x2 = luaL_checknumber(L, 4);
-  int y2 = luaL_checknumber(L, 5);
-  int x3 = luaL_checknumber(L, 6);
-  int y3 = luaL_checknumber(L, 7);
-  sr_Pixel px = getColorArgs(L, 8, 0);
-  sr_drawTriangle(self->buffer, px, x1, y1, x2, y2, x3, y3);
-  return 0;
-}
-
-
 static int l_buffer_drawCircle(lua_State *L) {
   Buffer *self = luaL_checkudata(L, 1, CLASS_NAME);
   int x = luaL_checknumber(L, 2);
@@ -391,7 +377,6 @@ int luaopen_buffer(lua_State *L) {
     { "drawLine",       l_buffer_drawLine       },
     { "drawRect",       l_buffer_drawRect       },
     { "drawBox",        l_buffer_drawBox        },
-    { "drawTriangle",   l_buffer_drawTriangle   },
     { "drawCircle",     l_buffer_drawCircle     },
     { "drawBuffer",     l_buffer_drawBuffer     },
     { "draw",           l_buffer_drawBuffer     },
