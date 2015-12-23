@@ -59,7 +59,7 @@ def main():
   if build == "debug":
     FLAGS += [ "-g" ]
   else:
-    FLAGS += [ "-O2" ]
+    FLAGS += [ "-O3" ]
 
   # Handle "nojit" option -- compile with normal embedded Lua instead
   if "nojit" in sys.argv:
