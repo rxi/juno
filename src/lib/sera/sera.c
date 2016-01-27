@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2015 rxi
  *
  * This library is free software; you can redistribute it and/or modify it
@@ -143,7 +143,7 @@ static void clipRectAndOffset(sr_Rect *r, int *x, int *y, sr_Rect *to) {
 
 static void initBuffer(sr_Buffer *b, void *pixels, int w, int h) {
   /* Init lookup tables if not inited */
-  init(); 
+  init();
   /* Init buffer */
   b->pixels = pixels;
   b->w = w;
@@ -366,7 +366,7 @@ void sr_noise(sr_Buffer *b, unsigned seed, int low, int high, int grey) {
   int i;
   low = CLAMP(low, 0, 0xfe);
   high = CLAMP(high, low + 1, 0xff);
-  i = b->w * b->h; 
+  i = b->w * b->h;
   if (grey) {
     while (i--) {
       b->pixels[i].rgba.r = low + rand128(&s) % (high - low);
@@ -488,7 +488,10 @@ static void blendPixel(sr_DrawMode *m, sr_Pixel *d, sr_Pixel s) {
 
 
 void sr_drawPixel(sr_Buffer *b, sr_Pixel c, int x, int y) {
-  if (x >= b->clip.x && x < b->clip.w && y >= b->clip.y && y < b->clip.h) {
+  if (
+    x >= b->clip.x && x < b->clip.x + b->clip.w &&
+    y >= b->clip.y && y < b->clip.y + b->clip.h
+  ) {
     blendPixel(&b->mode, b->pixels + x + y * b->w, c);
   }
 }
@@ -816,7 +819,7 @@ static void drawBufferRotatedScaled(
     /* Invert source iterators & increments if we are scaled negatively */
     if (invX) {
       tsx = ((s.x * 2 + s.w) << FX_BITS) - sx - 1;
-      tsxi = -sxi; 
+      tsxi = -sxi;
     } else {
       tsx = sx;
       tsxi = sxi;
@@ -882,4 +885,3 @@ void sr_drawBuffer(
     }
   }
 }
-
