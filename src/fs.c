@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2015 rxi
  *
  * This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@ static char *concat(const char *str, ...) {
   const char *s;
   /* Get len */
   int len = strlen(str);
-  va_start(args, str); 
+  va_start(args, str);
   while ((s = va_arg(args, char*))) {
     len += strlen(s);
   }
@@ -58,9 +58,9 @@ static char *concat(const char *str, ...) {
   char *res = malloc(len + 1);
   if (!res) return NULL;
   strcpy(res, str);
-  va_start(args, str); 
+  va_start(args, str);
   while ((s = va_arg(args, char*))) {
-    strcat(res, s); 
+    strcat(res, s);
   }
   va_end(args);
   return res;
@@ -371,7 +371,7 @@ static int appendFileListNode(fs_FileListNode **list, const char *path) {
   return FS_ESUCCESS;
 }
 
-static int containsSeperator(const char *str) {
+static int containsSeparator(const char *str) {
   const char *p = str;
   while (*p) {
     if (isSeparator(*p++)) return 1;
@@ -442,7 +442,7 @@ fs_FileListNode *fs_listDir(const char *path) {
           if (*filename == '\0') continue;
           /* If the filename still contains seperators its the contents of a
            * sub directory -- we don't want to include this */
-          if (containsSeperator(filename)) {
+          if (containsSeparator(filename)) {
             continue;
           }
           if (appendFileListNode(&res, filename) != FS_ESUCCESS) {
