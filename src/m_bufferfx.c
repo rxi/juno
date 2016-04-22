@@ -249,31 +249,47 @@ static int l_bufferfx_blur(lua_State *L) {
   int radiusy = luaL_checknumber(L, 4);
   int y, x, ky, kx;
   int r, g, b, r2, g2, b2;
-  sr_Pixel px2;
+  sr_Pixel p2;
+  int w = src->buffer->w;
+  int h = src->buffer->h;
   int dx = 256 / (radiusx * 2 + 1);
   int dy = 256 / (radiusy * 2 + 1);
-  sr_Pixel px = sr_pixel(0, 0, 0, 0xff);
+  sr_Rect bounds = sr_rect(radiusx, radiusy, w - radiusx, h - radiusy);
+  sr_Pixel *p = self->buffer->pixels;
   checkBufferSizesMatch(L, self, src);
   /* do blur */
-  for (y = 0; y < src->buffer->h; y++) {
-    for (x = 0; x < src->buffer->w; x++) {
-      r = 0, g = 0, b = 0;
-      for (ky = -radiusy; ky <= radiusy; ky++) {
-        r2 = 0, g2 = 0, b2 = 0;
-        for (kx = -radiusx; kx <= radiusx; kx++) {
-          px2 = sr_getPixel(src->buffer, x + kx, y + ky);
-          r2 += px2.rgba.r;
-          g2 += px2.rgba.g;
-          b2 += px2.rgba.b;
+  for (y = 0; y < h; y++) {
+    int inBoundsY = y >= bounds.y && y < bounds.h;
+    for (x = 0; x < w; x++) {
+      /* are the pixels that will be used in bounds? */
+      int inBounds = inBoundsY && x >= bounds.x && x < bounds.w;
+      /* blur pixel */
+      #define GET_PIXEL_FAST(b, x, y) ((b)->pixels[(x) + (y) * w])
+      #define BLUR_PIXEL(GET_PIXEL)                      \
+        r = 0, g = 0, b = 0;                             \
+        for (ky = -radiusy; ky <= radiusy; ky++) {       \
+          r2 = 0, g2 = 0, b2 = 0;                        \
+          for (kx = -radiusx; kx <= radiusx; kx++) {     \
+            p2 = GET_PIXEL(src->buffer, x + kx, y + ky); \
+            r2 += p2.rgba.r;                             \
+            g2 += p2.rgba.g;                             \
+            b2 += p2.rgba.b;                             \
+          }                                              \
+          r += (r2 * dx) >> 8;                           \
+          g += (g2 * dx) >> 8;                           \
+          b += (b2 * dx) >> 8;                           \
         }
-        r += (r2 * dx) >> 8;
-        g += (g2 * dx) >> 8;
-        b += (b2 * dx) >> 8;
+      if (inBounds) {
+        BLUR_PIXEL(GET_PIXEL_FAST)
+      } else {
+        BLUR_PIXEL(sr_getPixel)
       }
-      px.rgba.r = (r * dy) >> 8;
-      px.rgba.g = (g * dy) >> 8;
-      px.rgba.b = (b * dy) >> 8;
-      sr_setPixel(self->buffer, px, x, y);
+      /* set pixel */
+      p->rgba.r = (r * dy) >> 8;
+      p->rgba.g = (g * dy) >> 8;
+      p->rgba.b = (b * dy) >> 8;
+      p->rgba.a = 0xff;
+      p++;
     }
   }
   return 0;
