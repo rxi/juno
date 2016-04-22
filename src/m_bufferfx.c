@@ -1,4 +1,4 @@
-/** 
+/**
  * Copyright (c) 2015 rxi
  *
  * This library is free software; you can redistribute it and/or modify it
@@ -242,6 +242,43 @@ static int l_bufferfx_displace(lua_State *L) {
 }
 
 
+static int l_bufferfx_blur(lua_State *L) {
+  Buffer *self = luaL_checkudata(L, 1, BUFFER_CLASS_NAME);
+  Buffer *src = luaL_checkudata(L, 2, BUFFER_CLASS_NAME);
+  int radiusx = luaL_checknumber(L, 3);
+  int radiusy = luaL_checknumber(L, 4);
+  int y, x, ky, kx;
+  int r, g, b, r2, g2, b2;
+  sr_Pixel px2;
+  int dx = 256 / (radiusx * 2 + 1);
+  int dy = 256 / (radiusy * 2 + 1);
+  sr_Pixel px = sr_pixel(0, 0, 0, 0xff);
+  checkBufferSizesMatch(L, self, src);
+  /* do blur */
+  for (y = 0; y < src->buffer->h; y++) {
+    for (x = 0; x < src->buffer->w; x++) {
+      r = 0, g = 0, b = 0;
+      for (ky = -radiusy; ky <= radiusy; ky++) {
+        r2 = 0, g2 = 0, b2 = 0;
+        for (kx = -radiusx; kx <= radiusx; kx++) {
+          px2 = sr_getPixel(src->buffer, x + kx, y + ky);
+          r2 += px2.rgba.r;
+          g2 += px2.rgba.g;
+          b2 += px2.rgba.b;
+        }
+        r += (r2 * dx) >> 8;
+        g += (g2 * dx) >> 8;
+        b += (b2 * dx) >> 8;
+      }
+      px.rgba.r = (r * dy) >> 8;
+      px.rgba.g = (g * dy) >> 8;
+      px.rgba.b = (b * dy) >> 8;
+      sr_setPixel(self->buffer, px, x, y);
+    }
+  }
+  return 0;
+}
+
 
 int luaopen_bufferfx(lua_State *L) {
   luaL_Reg reg[] = {
@@ -251,10 +288,10 @@ int luaopen_bufferfx(lua_State *L) {
     { "mask",       l_bufferfx_mask       },
     { "wave",       l_bufferfx_wave       },
     { "displace",   l_bufferfx_displace   },
+    { "blur",       l_bufferfx_blur       },
     { NULL, NULL }
   };
   luaL_newlib(L, reg);
   initTables();
   return 1;
 }
-
